@@ -1,6 +1,7 @@
 plugins {
     java
     jacoco
+    pmd
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
 }
@@ -78,4 +79,15 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+}
+
+pmd {
+    toolVersion = "7.0.0-rc4"
+    isConsoleOutput = true
+    isIgnoreFailures = false
+    ruleSets = listOf(
+        "category/java/bestpractices.xml",
+        "category/java/errorprone.xml",
+        "category/java/codestyle.xml"
+    )
 }

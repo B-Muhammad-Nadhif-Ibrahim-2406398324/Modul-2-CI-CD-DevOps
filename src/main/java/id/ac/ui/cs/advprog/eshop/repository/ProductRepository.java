@@ -10,9 +10,13 @@ import java.util.UUID;
 
 @Repository
 public class ProductRepository {
-    private List<Product> productData = new ArrayList<>();
+    private final List<Product> productData = new ArrayList<>();
 
-    public Product create(Product product) {
+    public ProductRepository() {
+        super();
+    }
+
+    public Product create(final Product product) {
         if (product.getProductId() == null) {
             product.setProductId(UUID.randomUUID().toString());
         }
@@ -20,25 +24,28 @@ public class ProductRepository {
         return product;
     }
 
-    public Product findById(String id) {
+    public Product findById(final String productId) {
         return productData.stream()
-                .filter(p -> p.getProductId().equals(id))
+                .filter(p -> p.getProductId().equals(productId))
                 .findFirst()
                 .orElse(null);
     }
 
-    public Product update(Product updatedProduct) {
-        Product product = findById(updatedProduct.getProductId());
+    public Product update(final Product updatedProduct) {
+        final Product product = findById(updatedProduct.getProductId());
+        Product updatedResult = null;
+
         if (product != null) {
             product.setProductName(updatedProduct.getProductName());
             product.setProductQuantity(updatedProduct.getProductQuantity());
-            return product;
+            updatedResult = product;
         }
-        return null;
+
+        return updatedResult;
     }
 
-    public void delete(String id) {
-        productData.removeIf(p -> p.getProductId().equals(id));
+    public void delete(final String productId) {
+        productData.removeIf(p -> p.getProductId().equals(productId));
     }
 
     public Iterator<Product> findAll() {
