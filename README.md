@@ -11,3 +11,8 @@ To ensure sufficiency, I use Code Coverage tools. However, even with 100% covera
 Having identical setup code in multiple classes makes the project harder to maintain. For instance, if the server configuration changes, I would need to update every single test class manually.
 
 To improve this, I should apply a Base Class approach. I can move the common setup (like @LocalServerPort and baseUrl initialization) into a parent class and have all functional test classes inherit from it. This way, the code remains clean, modular, and easier to maintain
+
+# Reflection 3
+1. Principles I apply:
+- SRP: Change on update method in CarRepository.java. Before changing, the update method use for loop to find the car id, then I change it to use findById method that I already built. I also extract the CarController class from ProductController.java. I make a new file for it so the file only does one thing, controller for each item (ProductController for product and CarController for car).
+- 
