@@ -9,13 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class ProductRepository {
+public class ProductRepository implements IRepository<Product> { // Implementasi Interface
     private final List<Product> productData = new ArrayList<>();
 
-    public ProductRepository() {
-        super();
-    }
-
+    @Override
     public Product create(final Product product) {
         if (product.getProductId() == null) {
             product.setProductId(UUID.randomUUID().toString());
@@ -24,6 +21,12 @@ public class ProductRepository {
         return product;
     }
 
+    @Override
+    public Iterator<Product> findAll() {
+        return productData.iterator();
+    }
+
+    @Override
     public Product findById(final String productId) {
         return productData.stream()
                 .filter(p -> p.getProductId().equals(productId))
@@ -31,24 +34,21 @@ public class ProductRepository {
                 .orElse(null);
     }
 
-    public Product update(final Product updatedProduct) {
-        final Product product = findById(updatedProduct.getProductId());
-        Product updatedResult = null;
+    @Override
+    public Product update(final String productId, final Product updatedProduct) {
+        final Product product = findById(productId);
 
         if (product != null) {
             product.setProductName(updatedProduct.getProductName());
             product.setProductQuantity(updatedProduct.getProductQuantity());
-            updatedResult = product;
+            return product;
         }
 
-        return updatedResult;
+        return null;
     }
 
+    @Override
     public void delete(final String productId) {
         productData.removeIf(p -> p.getProductId().equals(productId));
-    }
-
-    public Iterator<Product> findAll() {
-        return productData.iterator();
     }
 }

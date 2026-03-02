@@ -14,5 +14,17 @@ To improve this, I should apply a Base Class approach. I can move the common set
 
 # Reflection 3
 1. Principles I apply:
-- SRP: Change on update method in CarRepository.java. Before changing, the update method use for loop to find the car id, then I change it to use findById method that I already built. I also extract the CarController class from ProductController.java. I make a new file for it so the file only does one thing, controller for each item (ProductController for product and CarController for car).
-- 
+- SRP: I separated CarController from the ProductController.java file. Previously, one file handled two different domains; now, each controller has a single reason to change, focusing only on its respective entity.
+- DIP: I introduced the IRepository<T> generic interface. Now, high-level modules like ProductServiceImpl and CarServiceImpl depend on the abstraction (IRepository) rather than the concrete implementations (ProductRepository or CarRepository). I implemented Constructor Injection in the Controllers and Services. This removes the tight coupling caused by using @Autowired directly on fields.
+- LSP: By removing the unnecessary inheritance where CarController used to extend ProductController (in the previous version), I ensured that CarController does not inherit behaviors it doesn't need. The use of IRepository<T> ensures that any implementation (Product or Car) can be used interchangeably wherever the interface is required without breaking the application's logic.
+- ISP: The IRepository interface provides a lean set of methods required for CRUD operations. If a model only requires "Read" access in the future, we can easily split this into smaller interfaces (e.g., IReadRepository), ensuring classes aren't forced to implement methods they don't use.
+
+2. Advantages of Applying SOLID Principles:
+- Enhanced Maintainability:By applying SRP, we separated CarController from ProductController. If we want to change the URL mapping for car-related pages (e.g., from /car/listCar to /car/all), we only need to modify CarController. We don't have to worry about accidentally changing or breaking the ProductController logic because they are no longer in the same file. This makes the code much safer and easier to update.
+- Easier Testing: By using Constructor Injection, I can easily perform Unit Testing using Mockito. I can inject a "Mock Repository" into the CarService during tests without needing to instantiate the actual data list.
+- Reduced Code Duplication: Using a Generic Interface (IRepository<T>) allows us to standardize the behavior of all repositories. We don't have to redefine the structure of create, find, or delete for every new model we add.
+
+3. Disadvantages of Not Applying SOLID Principles:
+- Rigidity and Fragility: If CarController remained inside ProductController.java (violating SRP), any change to the Car logic might accidentally break the Product logic because they share the same file and potentially the same dependencies.
+- Tight Coupling: Without DIP, if the Service is hard-coded to use ProductRepository (concrete class), replacing the storage system would require a complete rewrite of the Service layer, making the system very difficult to evolve.
+- Spaghetti Code: Without LSP, forcing Car to inherit from Product just to "save code" would lead to "hacky" fixes where Car might have to throw exceptions for Product methods it doesn't actually support, making the code unpredictable and prone to bugs.
