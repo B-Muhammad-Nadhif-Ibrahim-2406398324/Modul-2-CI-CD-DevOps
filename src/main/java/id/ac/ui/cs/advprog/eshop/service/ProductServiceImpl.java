@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
-import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
+import id.ac.ui.cs.advprog.eshop.repository.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +12,16 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
+    private final IRepository<Product> productRepository;
 
     @Autowired
-    public ProductServiceImpl(final ProductRepository productRepository) {
+    public ProductServiceImpl(final IRepository<Product> productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
     public Product create(final Product product) {
-        productRepository.create(product);
-        return product;
+        return productRepository.create(product);
     }
 
     @Override
@@ -39,8 +38,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product update(final Product product) {
-        return productRepository.update(product);
+    public Product update(final String productId, final Product product) {
+        return productRepository.update(productId, product);
     }
 
     @Override
